@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kama WP Smiles
-Version: 1.6.4
+Version: 1.6.5
 Description: Заменяет стандартные смайлики WP. Легко можно установить свои смайлы, также в настройках можно выбрать предпочитаемые смайлики.
 Plugin URI: http://wp-kama.ru/?p=185
 Author: Kama
@@ -248,12 +248,14 @@ class Kama_Wp_Smiles {
 			var tx = document.getElementById( txtr_id );				
 			tx.focus();    
 			
+			aTag = ' ' + aTag + ' ';
+			
 			if(typeof tx.selectionStart != 'undefined') {
 				var start = tx.selectionStart;
 				var end = tx.selectionEnd;		
 				
 				var insText = tx.value.substring(start, end);
-				tx.value = tx.value.substr(0, start) + ' ' + aTag + ' ' + tx.value.substr(end);
+				tx.value = tx.value.substr(0, start) +  aTag  + tx.value.substr(end);
 				
 				var pos = start + aTag.length;
 				tx.selectionStart = pos;
@@ -267,7 +269,7 @@ class Kama_Wp_Smiles {
 			document.getElementById('sm_container').style.display = 'none';
 			
 			if( typeof tinyMCE != 'undefined' )
-				tinyMCE.execCommand("mceInsertContent", false, ' ' + aTag + ' ');
+				tinyMCE.execCommand("mceInsertContent", false, aTag);
 		}
 		
 		<?php
