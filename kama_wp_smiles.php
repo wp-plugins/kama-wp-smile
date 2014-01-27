@@ -246,10 +246,8 @@ class Kama_Wp_Smiles {
 		?>
 		function ksm_insert(aTag, txtr_id){
 			var tx = document.getElementById( txtr_id );				
-			tx.focus();    
-			
+			tx.focus();
 			aTag = ' ' + aTag + ' ';
-			
 			if(typeof tx.selectionStart != 'undefined') {
 				var start = tx.selectionStart;
 				var end = tx.selectionEnd;		
