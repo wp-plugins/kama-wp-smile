@@ -18,7 +18,7 @@ With Kama WP Smiles visitors of you blog will have easy instrument to add smiles
 
 On plugin settings page, you can choose which of accessible smiles will appear in the smiles block. And you can tune smiles special code like :) which will be replaced on smile image in content.
 
-If you will not enjoy the plugin, you can just delete it. On uninstall, plugin will clean up after itself.
+If you don't enjoy the plugin, you can just delete it. On uninstall, plugin will clean up after itself.
 
 [Official plugin page](http://wp-kama.ru/id_185/palagin-cmaylikov-na-lyuboy-vkus-v-postah-i-kommentariyah-dlya-wordpress.html)
 
@@ -54,8 +54,8 @@ To add smile block to comment form themself. Leave empty comment ID field in set
 == Changelog ==
 
 = 1.6.0 (24.01.2014) =
-1. Images in smile block now is not image and not downloading whit page. It save HTML requests.
-2. Now select inuse smiles in admin panel more comfortable.
+1. Images in smile block now is not image and not downloading with page. It save HTML requests.
+2. Now select used smiles in admin panel more comfortable.
 3. New principle to add smile block to comment form.
 4. CSS styles and JS scripts now adding direct to HTML document. It save HTML requests.
 5. Added smile block in admin panel.
