@@ -8,7 +8,7 @@ Stable tag: 1.6.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Replace original WordPress smiles. Automaticaly add smiles block to comment form and place smiles to admin panel by adding ability to insert smiles while writing a post or answers on comments.
+Replace original WordPress smiles to pretty dynamic one. Automaticaly add smiles block to comment form and to admin panel Visual/HTML editor.
 
 == Description ==
 
