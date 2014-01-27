@@ -50,6 +50,7 @@ To add smile block to comment form themself. Leave empty comment ID field in set
 1. Admin panel settings page.
 2. Comment form with smile block in theme.
 3. Comment form with smile block in admin panel.
+4. Post html/visual editor with smile block in admin panel.
 
 == Changelog ==
 
