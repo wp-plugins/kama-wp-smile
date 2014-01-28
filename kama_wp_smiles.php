@@ -145,18 +145,19 @@ class Kama_Wp_Smiles {
 			echo $this->textarea_insert_smile_js_function();
 			?>
 			
-			var 
-			tx = document.getElementById( '<?php echo $this->opt['textarea_id'] ?>' ),
-			txNext = tx.nextSibling,
-			txParent = tx.parentNode,
-			txWrapper = document.createElement('DIV');
-			
-			txWrapper.innerHTML = '<?php echo $all_smile ?>';
-			txWrapper.style.position = 'relative';
-			txWrapper.style.zIndex = '9999';
-			txWrapper.appendChild(tx);
-			txWrapper = txParent.insertBefore(txWrapper, txNext);			
-			
+			var tx = document.getElementById( '<?php echo $this->opt['textarea_id'] ?>' );
+			if( tx ){
+				var
+				txNext = tx.nextSibling,
+				txParent = tx.parentNode,
+				txWrapper = document.createElement('DIV');
+				
+				txWrapper.innerHTML = '<?php echo $all_smile ?>';
+				txWrapper.style.position = 'relative';
+				txWrapper.style.zIndex = '9999';
+				txWrapper.appendChild(tx);
+				txWrapper = txParent.insertBefore(txWrapper, txNext);			
+			}
 		</script>
 		<!-- End Kama WP Smiles -->
 		<?php
