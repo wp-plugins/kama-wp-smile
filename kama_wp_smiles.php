@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kama WP Smiles
-Version: 1.6.6
+Version: 1.6.6.1
 Description: Заменяет стандартные смайлики WP. Легко можно установить свои смайлы, также в настройках можно выбрать предпочитаемые смайлики.
 Plugin URI: http://wp-kama.ru/?p=185
 Author: Kama
@@ -14,6 +14,7 @@ remove_filter('comment_text', 'convert_smilies', 20);
 remove_filter('the_content', 'convert_smilies');
 remove_filter('the_excerpt', 'convert_smilies');
 
+register_activation_hook( __FILE__, function(){ Kama_Wp_Smiles::instance()->activation(); } );
 
 register_uninstall_hook(  __FILE__, array( 'Kama_Wp_Smiles', 'uninstall') );
 
@@ -301,13 +302,15 @@ class Kama_Wp_Smiles {
 		add_action( 'admin_head', array($this, 'admin_styles') );
 		add_action( 'admin_print_footer_scripts', array($this, 'admin_js'), 999 );
 		
-		register_activation_hook( __FILE__, array( $this, 'activation') );
-
 	}
+	
 	function activation(){
 		delete_option('use_smilies');
-		$this->def_options();
+		
+		if( ! get_option( self::OPT_NAME ) )
+			$this->def_options();
 	}
+	
 	function uninstall(){
 		global $wpdb;
 		
@@ -379,15 +382,10 @@ class Kama_Wp_Smiles {
 	
 	// добавляем ко всем textarea созданым через the_editor
 	function admin_insert( $html ){
-		preg_match('@<textarea[^>]+id=[\'"]([^>]+)[\'"]@i', $html, $match );
+		preg_match('~<textarea[^>]+id=[\'"]([^\'"]+)~i', $html, $match );
 		$tx_id = $match[1];
 
-		$html = str_replace( '<textarea', '<div style="position:relative;"><textarea', $html );
-		$html = str_replace( 
-			'textarea>', 
-			'textarea>'. $this->get_all_smile_html( $tx_id ) . '</div>', 
-			$html
-		);
+		$html = str_replace('textarea>', 'textarea>'. $this->get_all_smile_html( $tx_id ), $html );
 
 		return $html;
 	}
