@@ -31,11 +31,12 @@ function kama_sm_get_smiles_code( $textarea_id ){
 
 
 class Kama_Wp_Smiles {
+	const OPT_NAME = 'wp_sm_opt'; 	//название опций
+	
 	public $plugin_dir;
 	public $plugin_url;
 	public $opt;						//опции
 	
-	const OPT_NAME = 'wp_sm_opt'; 	//название опций
 	private $sm_img; 				//шаблон замены
 	
 	protected static $instance;
@@ -141,9 +142,7 @@ class Kama_Wp_Smiles {
 		?>
 		<!-- Kama WP Smiles -->
 		<script type="text/javascript">			
-			<?php 
-			echo $this->textarea_insert_smile_js_function();
-			?>
+			<?php echo $this->textarea_insert_smile_js_function(); ?>
 			
 			var tx = document.getElementById( '<?php echo $this->opt['textarea_id'] ?>' );
 			if( tx ){
