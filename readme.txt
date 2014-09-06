@@ -54,6 +54,9 @@ To add smile block to comment form themself. Leave empty comment ID field in set
 
 == Changelog ==
 
+= 1.6.6.1 (6.09.2014) =
+Adaptation to WP 4.0
+
 = 1.6.0 (24.01.2014) =
 1. Images in smile block now is not image and not downloading with page. It save HTML requests.
 2. Now select used smiles in admin panel more comfortable.
