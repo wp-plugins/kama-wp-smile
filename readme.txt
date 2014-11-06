@@ -1,5 +1,5 @@
 === Kama WP Smiles ===
-Contributors: Kama
+Contributors: Tkama
 Official website: http://wp-kama.ru/id_185/palagin-cmaylikov-na-lyuboy-vkus-v-postah-i-kommentariyah-dlya-wordpress.html
 Tags: comments, smiles, posts, optimization
 Requires at least: 3.0.1
