@@ -60,7 +60,7 @@ To add smile block to comment form themself. Leave empty comment ID field in set
 == Changelog ==
 
 = 1.6.7 (5.5.2015) =
-FIX: Adaptation to Emoji icons added by WP 4.2 
+FIX: Adaptation to Emoji icons added in WP 4.2 
 
 = 1.6.6.1 (6.09.2014) =
 Adaptation to WP 4.0
