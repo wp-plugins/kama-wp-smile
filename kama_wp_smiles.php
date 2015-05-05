@@ -227,7 +227,7 @@ class Kama_Wp_Smiles {
 		if( ! is_singular() || $GLOBALS['post']->comment_status != 'open' )
 			return; 
 		
-		echo '<style>'. $this->main_css() . $this->opt['additional_css'] .'</style>';
+		echo '<style>'. $this->main_css() . @ $this->opt['additional_css'] .'</style>';
 	}
 	
 	function main_css(){
