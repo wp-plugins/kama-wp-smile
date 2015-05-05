@@ -1,5 +1,4 @@
 <style type="text/css">
-	<?php echo $this->opt['use_css']  ? $this->opt['use_css'] : $this->smiles_css(); ?>
 	.sm_list{ position:relative !important; top:16px !important; }
 	.wrap{ max-width:1000px; margin-left:20px; }
 	
@@ -14,7 +13,9 @@
 	
 	.used_smiles{  }
 	.select_smiles{  }
-	.used_smiles:after, .select_smiles:after{ display:block; content:''; clear:both; }	
+	.used_smiles:after, .select_smiles:after{ display:block; content:''; clear:both; }
+	
+	.kws-smiley{ margin-top: 20% !important; }
 </style>
 
 <div class='wrap'>
@@ -26,7 +27,7 @@
 		<br style='clear:both'/>
 		
 		<div class='smiles_wrapper'>
-			<p>Выберете смайлики:</p>
+			<p>Выберите смайлики:</p>
 			<div class='select_smiles'><?php $this->get_dir_smiles_img(); ?></div>
 		</div>
 

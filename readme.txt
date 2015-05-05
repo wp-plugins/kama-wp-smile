@@ -3,8 +3,8 @@ Contributors: Tkama
 Official website: http://wp-kama.ru/id_185/palagin-cmaylikov-na-lyuboy-vkus-v-postah-i-kommentariyah-dlya-wordpress.html
 Tags: comments, smiles, posts, optimization
 Requires at least: 3.0.1
-Tested up to: 3.8
-Stable tag: 1.6.6.1
+Tested up to: 4.2.1
+Stable tag: 1.6.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,6 +45,8 @@ To add smile block to comment form themself. Leave empty comment ID field in set
 
     <?php echo kama_sm_get_smiles_code(); ?>
 	
+	
+	
 == Screenshots ==
 
 1. Admin panel settings page.
@@ -52,7 +54,13 @@ To add smile block to comment form themself. Leave empty comment ID field in set
 3. Comment form with smile block in admin panel.
 4. Post html/visual editor with smile block in admin panel.
 
+
+
+
 == Changelog ==
+
+= 1.6.7 (5.5.2015) =
+FIX: Adaptation to Emoji icons added by WP 4.2 
 
 = 1.6.6.1 (6.09.2014) =
 Adaptation to WP 4.0
