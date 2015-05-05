@@ -4,7 +4,7 @@ Official website: http://wp-kama.ru/id_185/palagin-cmaylikov-na-lyuboy-vkus-v-po
 Tags: comments, smiles, posts, optimization
 Requires at least: 3.0.1
 Tested up to: 4.2.1
-Stable tag: 1.6.7
+Stable tag: 1.6.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,6 +58,9 @@ To add smile block to comment form themself. Leave empty comment ID field in set
 
 
 == Changelog ==
+
+= 1.6.8 (5.5.2015) =
+CHANGE: CSS styles changes. Now only additional css saves into DB and default options uses everywhere.
 
 = 1.6.7 (5.5.2015) =
 FIX: Adaptation to Emoji icons added in WP 4.2 

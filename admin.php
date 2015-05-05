@@ -34,7 +34,7 @@
 		<div>
 			<?php 
 				$smiles = '';
-				foreach( $this->opt['used_sm'] as $smile )
+				foreach( (array) @ $this->opt['used_sm'] as $smile )
 					$smiles .= "$smile,";
 				$smiles = rtrim($smiles, ',');
 			?>
@@ -43,17 +43,17 @@
 		
 		<br style='clear:both'/>
 		
-		<p><label><input type='text' name='textarea_id' size='15' value='<?php echo $this->opt['textarea_id']?>' /> <b>ID поля комментирования</b> (атирубт id HTML тега textarea).</label><br>
+		<p><label><input type='text' name='textarea_id' size='15' value='<?php echo @ $this->opt['textarea_id']?>' /> <b>ID поля комментирования</b> (атирубт id HTML тега textarea).</label><br>
 		Оставьте поле пустым, чтобы плагин не пытался автоматически встроить смайлики и используйте php код: <code>&lt;?php echo kama_sm_get_smiles_code( $textarea_id ) ?&gt;</code> в форме комментирвоания. Этот код выводит список смайликов (выглядит как под заголовком этой страницы).</p>
 		
 		
-		<p><label><input type='text' name='spec_tags' size='15' value='<?php echo implode(',', $this->opt['spec_tags'])?>' /> <b>HTML теги исключения</b>.</label> 
+		<p><label><input type='text' name='spec_tags' size='15' value='<?php echo implode(',', (array) @ $this->opt['spec_tags'])?>' /> <b>HTML теги исключения</b>.</label> 
 		<br>Укажите название HTML тегов (через запятую), содержание которых не нужно обрабатывать. Например: <code>code,pre</code>.</p>		
 		
 		<p>
 			Специальные обозначения смайликов:<br>
 			<textarea name='hard_sm' style="width:200px; height:150px;"><?php 
-				foreach( $this->opt['hard_sm'] as $k => $v ){
+				foreach( (array) @ $this->opt['hard_sm'] as $k => $v ){
 					echo $k .' >>> '. $v ."\n";
 				} 
 			?></textarea>
@@ -62,10 +62,11 @@
 		</p>
 		
 		<p>
-			CSS стили:<br>
-			<textarea name='use_css' style="width:100%; height:150px;"><?php echo $this->opt['use_css']?></textarea>
+			Дополнительные CSS стили:<br>
+			<textarea name='additional_css' style="width:100%; height:70px;"><?php echo @ $this->opt['additional_css']?></textarea>
 			<br> 
-			Можно перенести стили в файл стилей, чтобы они не хранились в настройках.
+			Допишите здесь имеющиеся стили, чтобы настроить вывод под себя. Эти стили будут добавлены после дефолтных. Дефолтные стили:
+			<textarea readonly style="width:100%; height:50px;"><?php echo @ $this->main_css() ?></textarea>
 		</p>
 		
 		<br>	
@@ -86,8 +87,8 @@
 	<br><br>
 	Название файлов будут использоваться в тексте, как теги для замены. Например, если вы залили файл kissed.gif в текст будет вставляться тег <code>*kissed*</code>. В названии допускаются: нижний регистр латинских букв (a-z), цифры (0-9), тире (-) и подчеркивание (_).
 	<br><br>
-	Если вы загружаете свой комплект смайликов, то лучше используйте идентичные названия и не забудте поделиться этим комплектом <a href='http://wp-kama.ru/contacts'>со мной</a>. Я включу его в плагин <img src="<?php echo $this->plugin_url ?>smiles/bb.gif" /></p>
-	<h3>Удалине плагина</h3>
+	Если вы загружаете свой комплект смайликов, то лучше используйте идентичные названия и не забудьте поделиться этим комплектом <a href='http://wp-kama.ru/contacts'>со мной</a>. Я включу его в плагин <img src="<?php echo $this->plugin_url ?>smiles/bb.gif" /></p>
+	<h3>Удаление плагина</h3>
 	<p>При удалении, плагин удаляет все следы прибывания на сайте. Конструкции смайликов вида <code>*smile*</code> в постах и комментариях также будут удалены. При удалении, на всякий случай, сделайте бэкап базы данных.</p>
 	
 </div>

@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kama WP Smiles
-Version: 1.6.7
+Version: 1.6.8
 Description: Заменяет стандартные смайлики WP. Легко можно установить свои смайлы, также в настройках можно выбрать предпочитаемые смайлики.
 Plugin URI: http://wp-kama.ru/?p=185
 Author: Kama
@@ -56,8 +56,7 @@ class Kama_Wp_Smiles {
 		
 		
 		// инициализация
-		if( $this->opt['use_css'] )
-			add_action( 'wp_head', array( &$this, 'print_style') );
+		add_action( 'wp_head', array( &$this, 'styles') );
 		
 		if( ! $this->opt['not_insert'] )
 			add_action( 'wp_footer', array( &$this, 'footer_scripts') );
@@ -73,7 +72,7 @@ class Kama_Wp_Smiles {
 		$this->opt['textarea_id'] = 'comment';
 		$this->opt['spec_tags']   = array('pre','code');
 		$this->opt['not_insert']  = 0;
-		$this->opt['use_css']     = $this->smiles_css();
+		$this->opt['additional_css']     = '';
 		
 		//разделил для того, чтобы упростить поиск вхождений
 		$this->opt['used_sm'] = array('smile','sad','laugh','rofl','blum','kiss','yes','no','good','bad','unknw','sorry','pardon','wacko','acute','boast','boredom','dash','search','crazy','yess','cool');		
@@ -224,30 +223,24 @@ class Kama_Wp_Smiles {
 	}
 
 	// wp_head
-	function print_style(){
+	function styles(){
 		if( ! is_singular() || $GLOBALS['post']->comment_status != 'open' )
 			return; 
 		
-		echo '<style>'. $this->opt['use_css'] .'</style>';
+		echo '<style>'. $this->main_css() . $this->opt['additional_css'] .'</style>';
 	}
 	
-	function smiles_css(){
+	function main_css(){
 		ob_start();
 		?>
 <style>
 /* kama wp smiles */
-.sm_list{ z-index:9999; position:absolute; bottom:5px; left:5px; }
-.sm_container{ display:none; position:absolute; top:0px; left:0px; width:400px; z-index:1001; background:#fff; padding: .5em 0; border-radius: 2px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
-.sm_container .smiles_button{ cursor:pointer; width:50px; height:30px; display:inline-block; background-position:center center; background-repeat:no-repeat; }
-.sm_container .smiles_button:hover{ opacity:0.7; }
-.kws-smiley{
-	display: inline !important;
-	border: none !important;
-	box-shadow: none !important;
-	margin: 0 .07em !important;
-	vertical-align: -0.1em !important;
-	background: none !important;
-	padding: 0 !important;
+.sm_list{ z-index:9999; position:absolute; bottom:.3em; left:.3em; }
+.sm_container{ display:none; position:absolute; top:0px; left:0px; width:410px; box-sizing: border-box; z-index:1001; background:#fff; padding:5px; border-radius:2px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+.sm_container:after{ content:''; display:table; clear:both; }
+.sm_container .smiles_button{ cursor:pointer; width:50px; height: 35px; display: inline-block; float: left; background-position:center center; background-repeat:no-repeat; }
+.sm_container .smiles_button:hover{ background-color: rgba(255, 223, 0,.1); }
+.kws-smiley{ display: inline !important; border: none !important; box-shadow: none !important; margin: 0 .07em !important; vertical-align: -0.1em !important; background: none !important; padding: 0 !important;
 }
 </style>
 		<?php
@@ -313,6 +306,8 @@ class Kama_Wp_Smiles {
 		
 		add_action( 'admin_head', array( $this, 'admin_styles') );
 	}
+	function admin_styles(){ echo '<style>'. $this->main_css() .'</style>'; }
+	
 	
 	function activation(){
 		delete_option('use_smilies');
@@ -374,7 +369,7 @@ class Kama_Wp_Smiles {
 			$hard_sm = $hard_sm['temp'];
 		
 			$this->opt['textarea_id'] = $_POST['textarea_id'];
-			$this->opt['use_css']     = stripslashes( $_POST['use_css'] );
+			$this->opt['additional_css']     = stripslashes( $_POST['additional_css'] );
 			$this->opt['spec_tags']   = $spec_tags;
 			$this->opt['used_sm']     = $used_sm2;
 			$this->opt['not_insert']  = isset( $_POST['not_insert'] ) ? 1 : 0;
@@ -427,18 +422,6 @@ class Kama_Wp_Smiles {
 		});
 		//*/
 		</script>
-		<?php
-	}
-	
-	function admin_styles(){
-		?>
-		<style>
-			<?php echo $this->smiles_css(); ?>
-			.sm_list{ z-index:9999; bottom:auto; opacity:0.7; }
-			.sm_list:hover{ opacity:1; }
-
-			.sm_container{ padding:2px; top:4px; left:4px; }
-		</style>
 		<?php
 	}
 	
