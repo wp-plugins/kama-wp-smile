@@ -235,10 +235,9 @@ class Kama_Wp_Smiles {
 		ob_start();
 		?>
 <style>
+/* kama wp smiles */
 .sm_list{ z-index:9999; position:absolute; bottom:5px; left:5px; }
-.sm_container{
-	display:none; position:absolute; top:0px; left:0px; width:400px; z-index:1001; background:#fff; padding:5px; border-radius:6px; box-shadow:#D0D0D0 0 0 4px;
-}
+.sm_container{ display:none; position:absolute; top:0px; left:0px; width:400px; z-index:1001; background:#fff; padding: .5em 0; border-radius: 2px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
 .sm_container .smiles_button{ cursor:pointer; width:50px; height:30px; display:inline-block; background-position:center center; background-repeat:no-repeat; }
 .sm_container .smiles_button:hover{ opacity:0.7; }
 .kws-smiley{
