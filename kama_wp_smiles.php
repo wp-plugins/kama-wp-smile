@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kama WP Smiles
-Version: 1.6.8
+Version: 1.6.9
 Description: Заменяет стандартные смайлики WP. Легко можно установить свои смайлы, также в настройках можно выбрать предпочитаемые смайлики.
 Plugin URI: http://wp-kama.ru/?p=185
 Author: Kama
@@ -240,7 +240,7 @@ class Kama_Wp_Smiles {
 .sm_container:after{ content:''; display:table; clear:both; }
 .sm_container .smiles_button{ cursor:pointer; width:50px; height: 35px; display: inline-block; float: left; background-position:center center; background-repeat:no-repeat; }
 .sm_container .smiles_button:hover{ background-color: rgba(255, 223, 0,.1); }
-.kws-smiley{ display: inline !important; border: none !important; box-shadow: none !important; margin: 0 .07em !important; vertical-align: -0.1em !important; background: none !important; padding: 0 !important;
+.kws-smiley{ display: inline !important; border: none !important; box-shadow: none !important; margin: 0 .07em !important; vertical-align:-0.2em !important; background: none !important; padding: 0 !important;
 }
 </style>
 		<?php
@@ -437,7 +437,7 @@ class Kama_Wp_Smiles {
 				$sm_name = $hard_sm[ $smile ];
 			}
 				
-			echo '<b id="'. $sm_code .'" title="'. $sm_name .'" class="'. ( in_array( $sm_code, $this->opt['used_sm'] ) ? 'checked':'' ) .'" >'. sprintf( $this->sm_img, $sm_code, $sm_name ) .'</b>';
+			echo '<b id="'. $sm_code .'" title="'. $sm_name .'" class="'. ( in_array( $sm_code, (array) @ $this->opt['used_sm'] ) ? 'checked':'' ) .'" >'. sprintf( $this->sm_img, $sm_code, $sm_name ) .'</b>';
 		}
 	}
 	

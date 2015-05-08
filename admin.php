@@ -11,9 +11,9 @@
 	.kama_sm_options table td { padding:3px 5px; text-align:left; }
 	.kama_sm_options table td span { line-height:16px; }
 	
-	.used_smiles{  }
+	.used-smiles{  }
 	.select_smiles{  }
-	.used_smiles:after, .select_smiles:after{ display:block; content:''; clear:both; }
+	.used-smiles:after, .select_smiles:after{ display:block; content:''; clear:both; }
 	
 	.kws-smiley{ margin-top: 20% !important; }
 </style>
@@ -27,7 +27,7 @@
 		<br style='clear:both'/>
 		
 		<div class='smiles_wrapper'>
-			<p>Выберите смайлики:</p>
+			<h3>Выбранные смайлики (можно сортировать перетаскиванием):</h3>
 			<div class='select_smiles'><?php $this->get_dir_smiles_img(); ?></div>
 		</div>
 
@@ -93,43 +93,51 @@
 	
 </div>
 
-
+<?php wp_enqueue_script('jquery-ui-sortable'); ?>
 <script type='text/javascript'>
 	// jQuery
 	jQuery(document).ready(function($){
 		// выбор смайликов
 		var 
-		$el = $('.select_smiles'),
-		$elUsed = $('<div class="used_smiles"></div>'),
-		$used_sm = $('.used_sm');
-		$el.before( $elUsed );
+		$allSm   = $('.select_smiles'),
+		$used_sm = $('input[name="used_sm"]'),
+		$elUsed  = $('<div class="used-smiles">');
 		
-		$el.children().each(function(){
-			$(this).click(function(){
-				if( $(this).hasClass('checked') ){
-					$(this).prependTo( $el ).removeClass('checked');
-				} else {
-					$(this).appendTo( $elUsed ).addClass('checked');
-				}
-				// обновляем поле
-				var used_sm_val = '';
-				$elUsed.find('b').each(function(){
-					used_sm_val += $(this).attr('id') + ",";
-				});
-				$used_sm.val( used_sm_val.replace(/,$/,'') );
-			});
+		$allSm.before( $elUsed ).before('<h3>Невыбранные:<h3>');
+		
+		$allSm.find('> *').click(function(){
+			if( $(this).hasClass('checked') ){
+				$(this).prependTo( $allSm ).removeClass('checked');
+			} else {
+				$(this).appendTo( $elUsed ).addClass('checked');
+			}
+
+			
+			collectToInput();
 		});
 		
-		// собираем по порядку
+		// собираем по порядку при первой загрузке
 		var array = $used_sm.val().replace(/\r/, '').split(/,/);
 		$.each( array, function(){
-			var th = this;
-			th.replace(/^\s+/,'').replace(/\s+$/,'');
-			if( th != '' ){
-				$el.find('#'+ th).appendTo( $elUsed );
+			this.replace(/^\s+/,'').replace(/\s+$/,'');
+			if( this != '' ){
+				$allSm.find('#'+ this).appendTo( $elUsed );
 			}
 		});
-		// Конец Выбор смайликов
+				
+		// обновляет input name="used_sm"
+		var collectToInput = function(){
+			var newSmIds = [];
+			$elUsed.find('> *').each(function(){
+				newSmIds.push( $(this).attr('id') );
+			});
+			$used_sm.val( newSmIds.join(',') );			
+		};
+		
+		// сортировка смайликов
+		$('.used-smiles').sortable({
+			stop: function( event, ui ) { collectToInput(); }
+		});
 				
 	});	
 </script>

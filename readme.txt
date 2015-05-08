@@ -3,8 +3,8 @@ Contributors: Tkama
 Official website: http://wp-kama.ru/id_185/palagin-cmaylikov-na-lyuboy-vkus-v-postah-i-kommentariyah-dlya-wordpress.html
 Tags: comments, smiles, posts, optimization
 Requires at least: 3.0.1
-Tested up to: 4.2.1
-Stable tag: 1.6.8
+Tested up to: 4.2.2
+Stable tag: 1.6.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,7 +59,10 @@ To add smile block to comment form themself. Leave empty comment ID field in set
 
 == Changelog ==
 
-= 1.6.8 (5.5.2015) =
+= 1.6.9 (8.05.2015) =
+ADDED: ability to sort order of smiles. So, you can set order of how smiles will be shown in block..
+
+= 1.6.8 (5.05.2015) =
 CHANGE: CSS styles changes. Now only additional css saves into DB and default options uses everywhere.
 
 = 1.6.7 (5.5.2015) =
