@@ -151,12 +151,13 @@ class Kama_Wp_Smiles {
 			if( tx ){
 				var
 				txNext = tx.nextSibling,
+				txPar  = tx.parentNode,
 				txWrapper = document.createElement('DIV');
 				
 				txWrapper.innerHTML = '<?php echo $all_smile ?>';
 				txWrapper.setAttribute('class', 'kws-wrapper');
 				txWrapper.appendChild(tx);
-				txWrapper = tx.parentNode.insertBefore(txWrapper, txNext);			
+				txWrapper = txPar.insertBefore(txWrapper, txNext);			
 			}
 		</script>
 		<!-- End Kama WP Smiles -->
