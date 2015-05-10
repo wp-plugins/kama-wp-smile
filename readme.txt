@@ -4,7 +4,7 @@ Official website: http://wp-kama.ru/id_185/palagin-cmaylikov-na-lyuboy-vkus-v-po
 Tags: comments, smiles, posts, optimization
 Requires at least: 3.0.1
 Tested up to: 4.2.2
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,7 +59,7 @@ To add smile block to comment form themself. Leave empty comment ID field in set
 
 == Changelog ==
 
-= 1.7.0 (11.05.2015) =
+= 1.7.1 (11.05.2015) =
 FIX: add "kws-wrapper" css class to front-end comment smiles block in order to change styles of the block out of admin settings page.
 
 = 1.6.9 (8.05.2015) =
