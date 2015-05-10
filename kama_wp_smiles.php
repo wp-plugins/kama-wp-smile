@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kama WP Smiles
-Version: 1.6.9
+Version: 1.7.0
 Description: Заменяет стандартные смайлики WP. Легко можно установить свои смайлы, также в настройках можно выбрать предпочитаемые смайлики.
 Plugin URI: http://wp-kama.ru/?p=185
 Author: Kama
@@ -151,14 +151,12 @@ class Kama_Wp_Smiles {
 			if( tx ){
 				var
 				txNext = tx.nextSibling,
-				txParent = tx.parentNode,
 				txWrapper = document.createElement('DIV');
 				
 				txWrapper.innerHTML = '<?php echo $all_smile ?>';
-				txWrapper.style.position = 'relative';
-				txWrapper.style.zIndex = '9999';
+				txWrapper.setAttribute('class', 'kws-wrapper');
 				txWrapper.appendChild(tx);
-				txWrapper = txParent.insertBefore(txWrapper, txNext);			
+				txWrapper = tx.parentNode.insertBefore(txWrapper, txNext);			
 			}
 		</script>
 		<!-- End Kama WP Smiles -->
@@ -235,6 +233,7 @@ class Kama_Wp_Smiles {
 		?>
 <style>
 /* kama wp smiles */
+.kws-wrapper{ position: relative; z-index:99; }
 .sm_list{ z-index:9999; position:absolute; bottom:.3em; left:.3em; }
 .sm_container{ display:none; position:absolute; top:0px; left:0px; width:410px; box-sizing: border-box; z-index:1001; background:#fff; padding:5px; border-radius:2px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
 .sm_container:after{ content:''; display:table; clear:both; }
@@ -306,8 +305,8 @@ class Kama_Wp_Smiles {
 		
 		add_action( 'admin_head', array( $this, 'admin_styles') );
 	}
-	function admin_styles(){ echo '<style>'. $this->main_css() .'</style>'; }
 	
+	function admin_styles(){ echo '<style>'. $this->main_css() .'</style>'; }
 	
 	function activation(){
 		delete_option('use_smilies');
