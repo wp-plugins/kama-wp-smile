@@ -1,12 +1,17 @@
 <?php
 /*
 Plugin Name: Kama WP Smiles
-Version: 1.7.1
+Version: 1.7.3
 Description: Заменяет стандартные смайлики WP. Легко можно установить свои смайлы, также в настройках можно выбрать предпочитаемые смайлики.
 Plugin URI: http://wp-kama.ru/?p=185
 Author: Kama
 Author URI: http://wp-kama.ru/
 */
+
+define('KWS_PLUGIN_DIR', plugin_dir_path(__FILE__) );
+define('KWS_PLUGIN_URL', plugin_dir_url(__FILE__) );
+
+
 
 /* удаляем стандартные фильты */
 remove_action('init', 'smilies_init', 5);
@@ -15,10 +20,7 @@ remove_filter('the_content', 'convert_smilies');
 remove_filter('the_excerpt', 'convert_smilies');
 
 register_activation_hook( __FILE__, function(){ Kama_Wp_Smiles::instance()->activation(); } );
-
 register_uninstall_hook(  __FILE__, array( 'Kama_Wp_Smiles', 'uninstall') );
-
-
 
 Kama_Wp_Smiles::instance();
 
@@ -30,12 +32,10 @@ function kama_sm_get_smiles_code( $textarea_id ){
 }
 
 
-class Kama_Wp_Smiles {
-	const OPT_NAME = 'wp_sm_opt'; //название опций
+class Kama_Wp_Smiles{
+	const OPT_NAME = 'wp_sm_opt';
 	
-	public $plugin_dir;
-	public $plugin_url;
-	public $opt; // опции
+	public $opt;
 	
 	private $sm_img; // шаблон замены
 	
@@ -46,14 +46,10 @@ class Kama_Wp_Smiles {
 		return self::$instance;
 	}
 	
-	private function __construct(){
-		$this->plugin_dir = plugin_dir_path(__FILE__);
-		$this->plugin_url = plugin_dir_url(__FILE__);
-		
+	private function __construct(){		
 		$this->opt = get_option( self::OPT_NAME );
 			
-		$this->sm_img = '<img class="kws-smiley" src="'. $this->plugin_url .'smiles/%1$s.gif" alt="%2$s" />';
-		
+		$this->sm_img = '<img class="kws-smiley" src="'. KWS_PLUGIN_URL .'smiles/%1$s.gif" alt="%2$s" />';
 		
 		// инициализация
 		add_action( 'wp_head', array( &$this, 'styles') );
@@ -61,76 +57,86 @@ class Kama_Wp_Smiles {
 		if( ! $this->opt['not_insert'] )
 			add_action( 'wp_footer', array( &$this, 'footer_scripts') );
 
-		add_filter('comment_text', array( &$this, 'smiles') );
-		add_filter('the_content', array( &$this, 'smiles') );
-		add_filter('the_excerpt', array( &$this, 'smiles') );
+		add_filter('comment_text', array( &$this, 'convert_smilies') );
+		add_filter('the_content', array( &$this, 'convert_smilies') );
+		add_filter('the_excerpt', array( &$this, 'convert_smilies') );
 		
 		if( is_admin() ) $this->admin_init();
 	}
 		
-	function def_options(){
-		$this->opt['textarea_id'] = 'comment';
-		$this->opt['spec_tags']   = array('pre','code');
-		$this->opt['not_insert']  = 0;
-		$this->opt['additional_css']     = '';
+	function set_def_options(){
+		$this->opt = $this->def_options();
 		
-		//разделил для того, чтобы упростить поиск вхождений
-		$this->opt['used_sm'] = array('smile','sad','laugh','rofl','blum','kiss','yes','no','good','bad','unknw','sorry','pardon','wacko','acute','boast','boredom','dash','search','crazy','yess','cool');		
-		$this->opt['hard_sm'] = array( //смайлики который обозначаются спецсимволами (исключения)
-			 '=)'  => 'smile'
-			,':)'  => 'smile'
-			,':-)' => 'smile'
-			,'=('  => 'sad'
-			,':('  => 'sad'
-			,':-(' => 'sad'
-			,'=D'  => 'laugh'
-			,':D'  => 'laugh'
-			,':-D' => 'laugh'
-		);
-		$this->opt['exist'] = $this->get_dir_smile_names();
-		
-		update_option( self::OPT_NAME, $this->opt ); // add_option учитывается автоматом
+		update_option( self::OPT_NAME, $this->opt );
 			
 		return true;
 	}
+	
+	function def_options(){
+		return array(
+			'textarea_id'    => 'comment',
+			'spec_tags'      => array('pre','code'),
+			'not_insert'     => 0,
+			'additional_css' => '',
+			
+			//разделил для того, чтобы упростить поиск вхождений
+			'used_sm'        => array('smile', 'sad', 'laugh', 'rofl', 'blum', 'kiss', 'yes', 'no', 'good', 'bad', 'unknw', 'sorry', 'pardon', 'wacko', 'acute', 'boast', 'boredom', 'dash', 'search', 'crazy', 'yess', 'cool'),
+			
+			//смайлики который обозначаются спецсимволами (исключения)
+			'hard_sm'        => array( '=)'  => 'smile', ':)'  => 'smile', ':-)' => 'smile', '=('  => 'sad', ':('  => 'sad', ':-(' => 'sad', '=D'  => 'laugh', ':D'  => 'laugh', ':-D' => 'laugh', ),
+			// все имеющиеся
+			'exist'          => $this->get_dir_smile_names(),
+		);
+	}
 
-	// Функция фильтрации
-	function smiles( $text ){
-		$pattern = '';
+	// Функция замены кодов на смайлы
+	function convert_smilies( $text ){
+		$pattern = array();
 		
-		foreach( $this->opt['hard_sm'] as $k => $v ) $pattern .= preg_quote( $k )."|";
+		// паттерн спец смайликов для замены
+		foreach( $this->opt['hard_sm'] as $k => $v ){
+			$pat = preg_quote( $k );
+
+			// если код смайлика начинается с ";" добавим возможность использвать спецсимволы вроде &quot;)
+			if( $pat{0} == ';' ){
+				$pat = '(?<!&.{2}|&.{3}|&.{4}|&.{5}|&.{6})' . $pat; // &#34; &#165; &#8254; &quot;
+			}
+			$pattern[] = $pat;
+		}
 		
-		$pattern = $pattern . '\*([a-z0-9-_]{0,20})\*'; // паттерн смайликов для замены
+		$pattern[] = '\*([a-z0-9-_]{0,20})\*'; // общий паттерн смайликов для замены
+		
+		$pattern = implode('|', $pattern ); // объединим все патерны		
 		
 		// если есть теги, в которых не нужно проводить замену
-		if( $pat = $this->opt['spec_tags'] ){
-			$out = $pat1 = $pat2 = '';
-			
-			foreach( $pat as $tag ) $pat1 .= "(<$tag.*$tag>)|"; // (<code.*code>)|(<pre.*pre>)|(<blockquote.*blockquote>)
-			
-			$pat1 = trim( $pat1, '|');
-			$pat2 .= '^<('. implode('|', $pat) .')'; 	// ^<(code|pre|blockquote)
-			$textarr = preg_split("@$pat1@Usi", $text, -1, PREG_SPLIT_DELIM_CAPTURE );
-			
-			foreach( $textarr as $textel ){
-				if( strlen( $textel ) > 0 && ! preg_match("@$pat2@i", $textel ) )
-					$out .= preg_replace_callback("@$pattern@", array( $this, 'kama_smiles_replacement'), $textel );
-				else
-					$out .= $textel;
+		$spec_tags = array_merge( array('style','script','textarea'), $this->opt['spec_tags'] );
+		
+		$out = '';
+		$spec_tags_pat1 = array();
+		foreach( $spec_tags as $tag ) $spec_tags_pat1[] = "(<$tag.*$tag>)"; // (<code.*code>)|(<pre.*pre>)|(<blockquote.*blockquote>)
+		
+		// разберем весь текст на элементы где спец блоки будут отдельно
+		$text_elements = preg_split('@'. implode('|', $spec_tags_pat1) .'@Usi', $text, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY );
+
+		$spec_tags_pat = '^<(?:'. implode('|', $spec_tags ) .')'; 	// ^<(?:code|pre|blockquote)
+		foreach( $text_elements as $textel ){
+			if( preg_match("@$spec_tags_pat@i", $textel ) ){
+				$out .= $textel;
+				continue;
 			}
+			
+			$out .= preg_replace_callback("@$pattern@", array( & $this, '__smiles_replace_cb'), $textel );
 		}
-		else
-			$out = preg_replace_callback("@$pattern@", array( $this, 'kama_smiles_replacement'), $text);
 
 		return $out;
 	}
 	
 	// Коллбэк функция для замены
-	function kama_smiles_replacement( $match ){
+	function __smiles_replace_cb( $match ){
 		if( $ok = @ $this->opt['hard_sm'][ $match[0] ] )
 			return sprintf( $this->sm_img, $ok, $ok );  
 		
-		elseif( in_array( $match[1], $this->opt['exist']) )
+		if( in_array( $match[1], $this->opt['exist']) )
 			return sprintf( $this->sm_img, $match[1], $match[0] );
 		
 		return $match[0]; // " {smile $match[0] not defined} ";
@@ -172,7 +178,7 @@ class Kama_Wp_Smiles {
 		// прячем src чтобы не было загрузки картинок при загрузке страницы, только при наведении
 		$all_smiles = str_replace( 'style', 'bg', $all_smiles );
 		
-		$out = '<div id="sm_list" class="sm_list" style="width:30px; height:30px; background:url('. $this->plugin_url .'smiles/smile.gif) center center no-repeat" 
+		$out = '<div id="sm_list" class="sm_list" style="width:30px; height:30px; background:url('. KWS_PLUGIN_URL .'smiles/smile.gif) center center no-repeat" 
 			onmouseover="
 			var el=this.childNodes[0];
 			if( el.style.display == \'block\' )
@@ -215,7 +221,7 @@ class Kama_Wp_Smiles {
 		$out = '';
 		foreach( $gather_sm as $name => $text ){
 			$params = "'{$text}', " . ( $textarea_id ? "'$textarea_id'" : "'{$this->opt['textarea_id']}'");
-			$out .= '<div class="smiles_button" onclick="ksm_insert('. $params .');" style="background-image:url('. $this->plugin_url .'smiles/'. $name .'.gif);" title="'. $text .'"></div>';
+			$out .= '<div class="smiles_button" onclick="ksm_insert('. $params .');" style="background-image:url('. KWS_PLUGIN_URL .'smiles/'. $name .'.gif);" title="'. $text .'"></div>';
 		}
 			
 		return $out;
@@ -240,7 +246,7 @@ class Kama_Wp_Smiles {
 .sm_container:after{ content:''; display:table; clear:both; }
 .sm_container .smiles_button{ cursor:pointer; width:50px; height: 35px; display: inline-block; float: left; background-position:center center; background-repeat:no-repeat; }
 .sm_container .smiles_button:hover{ background-color: rgba(255, 223, 0,.1); }
-.kws-smiley{ display: inline !important; border: none !important; box-shadow: none !important; margin: 0 .07em !important; vertical-align:-0.2em !important; background: none !important; padding: 0 !important;
+.kws-smiley{ display: inline !important; border: none !important; box-shadow: none !important; margin: 0 .07em !important; vertical-align:-0.2em !important; background: none !important; padding: 0;
 }
 </style>
 		<?php
@@ -285,7 +291,7 @@ class Kama_Wp_Smiles {
 	// читаем файлы с каталога. вернет массив
 	function get_dir_smile_names(){
 		$out = array();
-		foreach( glob( $this->plugin_dir . 'smiles/*.gif' ) as $fpath ){
+		foreach( glob( KWS_PLUGIN_DIR . 'smiles/*.gif' ) as $fpath ){
 			$fname = basename( $fpath );
 			$out[] = preg_replace('@\..*?$@', '', $fname ); // удяляем расширение
 		}
@@ -298,13 +304,13 @@ class Kama_Wp_Smiles {
 	
 	## Админ часть ---------------------------------------------------------------------------
 	function admin_init(){	
-		add_action( 'admin_menu',  array( $this, 'admin_menu') );
+		add_action( 'admin_menu',  array( & $this, 'admin_menu') );
 		
 		// добавляем смайлии к формам
-		add_action( 'the_editor', array( $this, 'admin_insert') );
-		add_action( 'admin_print_footer_scripts', array( $this, 'admin_js'), 999 );
+		add_action( 'the_editor', array( & $this, 'admin_insert') );
+		add_action( 'admin_print_footer_scripts', array( & $this, 'admin_js'), 999 );
 		
-		add_action( 'admin_head', array( $this, 'admin_styles') );
+		add_action( 'admin_head', array( & $this, 'admin_styles') );
 	}
 	
 	function admin_styles(){ echo '<style>'. $this->main_css() .'</style>'; }
@@ -312,8 +318,7 @@ class Kama_Wp_Smiles {
 	function activation(){
 		delete_option('use_smilies');
 		
-		if( ! get_option( self::OPT_NAME ) )
-			$this->def_options();
+		if( ! get_option( self::OPT_NAME ) ) $this->set_def_options();
 	}
 	
 	function uninstall(){
@@ -337,55 +342,61 @@ class Kama_Wp_Smiles {
 	}	
 	
 	function admin_menu(){
-		add_options_page('Настройки Kama WP Smiles', 'Kama WP Smiles', 'manage_options', __FILE__,  array( $this, 'admin_options_page'));
+		$hookname = add_options_page('Настройки Kama WP Smiles', 'Kama WP Smiles', 'manage_options', __FILE__,  array( & $this, 'admin_options_page') );
+		
+		add_action("load-$hookname", array( &$this, 'opt_page_load') );
 	}
 	
 	function admin_options_page(){
-		if( ! current_user_can('manage_options') )
-			return;
-			
-		if( isset( $_POST['kama_sm_submit'] ) ){
-			$used_sm = $used_sm2 = array();
-			
-			$used_sm = explode(",", trim( $_POST['used_sm']) );
-			
-			foreach( $used_sm as $val ){
-				$val = trim( $val);
-				if( $val )
-					$used_sm2[] = $val;
-			}
-			
-			$spec_tags = $_POST['spec_tags'] ? explode(',', str_replace(' ', '', trim( $_POST['spec_tags'] ) ) ) : array();
-			
-			$hard_sm = trim( $_POST['hard_sm'] );
-			$hard_sm = explode("\n", $hard_sm);
-			foreach( $hard_sm as $val ){
-				if( empty( $val) )
-					continue;
-					
-				$temp = explode(' >>> ', trim( $val ) );
-				$hard_sm['temp'][ trim( $temp[0] ) ] = trim( $temp[1] );
-			}
-			$hard_sm = $hard_sm['temp'];
+		if( ! current_user_can('manage_options') ) return;
 		
-			$this->opt['textarea_id'] = $_POST['textarea_id'];
-			$this->opt['additional_css']     = stripslashes( $_POST['additional_css'] );
-			$this->opt['spec_tags']   = $spec_tags;
-			$this->opt['used_sm']     = $used_sm2;
-			$this->opt['not_insert']  = isset( $_POST['not_insert'] ) ? 1 : 0;
-			$this->opt['exist']       = $this->get_dir_smile_names();
-			$this->opt['hard_sm']     = $hard_sm;
-
-			update_option( self::OPT_NAME, $this->opt );
-			delete_option('use_smilies'); // удаляем стандартную опцию отображения смайликов
-		}
-		elseif( isset( $_POST['kama_sm_reset']) )
-			$this->def_options();
-		
-		
-		include $this->plugin_dir .'admin.php';
+		include KWS_PLUGIN_DIR .'admin.php';
 	}
 	
+	
+	function opt_page_load(){
+		wp_enqueue_style('ks_admin_page', KWS_PLUGIN_URL .'admin-page.css' );
+		
+		if( isset($_POST['kama_sm_reset']) ) $this->set_def_options(); // сброс
+		
+		if( isset( $_POST['kama_sm_submit'] ) ) $this->update_options_handler(); //обновим опции
+	}
+	
+	function update_options_handler(){
+		$used_sm = $used_sm2 = array();
+
+		$used_sm = explode(",", trim( $_POST['used_sm']) );
+
+		foreach( $used_sm as $val ){
+			$val = trim( $val);
+			if( $val ) $used_sm2[] = $val;
+		}
+
+		$spec_tags = $_POST['spec_tags'] ? explode(',', str_replace(' ', '', trim( $_POST['spec_tags'] ) ) ) : array();
+
+		$hard_sm = trim( $_POST['hard_sm'] );
+		$hard_sm = explode("\n", $hard_sm);
+		foreach( $hard_sm as $val ){
+			if( empty( $val) )
+				continue;
+
+			$temp = explode(' >>> ', trim( $val ) );
+			$hard_sm['temp'][ trim( $temp[0] ) ] = trim( $temp[1] );
+		}
+		$hard_sm = $hard_sm['temp'];
+
+		$this->opt['textarea_id']    = $_POST['textarea_id'];
+		$this->opt['additional_css'] = stripslashes( $_POST['additional_css'] );
+		$this->opt['spec_tags']      = $spec_tags;
+		$this->opt['not_insert']     = isset( $_POST['not_insert'] ) ? 1 : 0;
+		$this->opt['hard_sm']        = $hard_sm;
+		$this->opt['used_sm']        = $used_sm2;
+		$this->opt['exist']          = $this->get_dir_smile_names();
+
+		update_option( self::OPT_NAME, $this->opt );
+
+		delete_option('use_smilies'); // удаляем стандартную опцию отображения смайликов	
+	}
 	
 	
 	// добавляем ко всем textarea созданым через the_editor
@@ -399,8 +410,8 @@ class Kama_Wp_Smiles {
 	}
 	
 	function admin_js(){
+		echo $this->insert_smile_js();
 		?>
-		<?php echo $this->insert_smile_js(); ?>
 		<script type="text/javascript">
 		//* Передвигаем блоки смайликов для визуального редактора и для HTML редактора
 		jQuery(document).ready(function( $){

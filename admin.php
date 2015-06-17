@@ -1,26 +1,7 @@
-<style type="text/css">
-	.sm_list{ position:relative !important; top:16px !important; }
-	.wrap{ max-width:1000px; margin-left:20px; }
-	
-	.smiles_wrapper{ width:700px; }
-	.smiles_wrapper b{ display:block; width:50px; height:50px; float:left; text-align:center; margin:5px; cursor:pointer; }
-	.smiles_wrapper b img{ padding-top:10px;}
-	.smiles_wrapper b.checked{ background:#eee; outline:1px dashed #BCBCBC; }
-	
-	.kama_sm_options { padding:20px 10px 0; }
-	.kama_sm_options table td { padding:3px 5px; text-align:left; }
-	.kama_sm_options table td span { line-height:16px; }
-	
-	.used-smiles{  }
-	.select_smiles{  }
-	.used-smiles:after, .select_smiles:after{ display:block; content:''; clear:both; }
-	
-	.kws-smiley{ margin-top: 20% !important; }
-</style>
-
 <div class='wrap'>
 	<div id="icon-options-general" class="icon32"><br /></div>
 	<h2>Настройки Kama WP Smiles</h2>
+	
 	<?php echo $this->get_all_smile_html(); ?>
 	
 	<form method="post" action="">
@@ -52,21 +33,23 @@
 		
 		<p>
 			Специальные обозначения смайликов:<br>
-			<textarea name='hard_sm' style="width:200px; height:150px;"><?php 
-				foreach( (array) @ $this->opt['hard_sm'] as $k => $v ){
-					echo $k .' >>> '. $v ."\n";
-				} 
-			?></textarea>
+			<textarea name='hard_sm' style="width:200px; height:150px;">
+				<?php foreach( (array) @ $this->opt['hard_sm'] as $k => $v ) echo $k .' >>> '. $v ."\n"; ?>
+			</textarea>
 			<br> 
 			Укажите обозначение, которое будет использоваться в тексте и название смайлика на которы обозначение должно быть заменено. Название смотрите выше, при наведении на смайлик.
 		</p>
 		
 		<p>
-			Дополнительные CSS стили:<br>
+			<label>Дополнительные CSS стили:<br>
 			<textarea name='additional_css' style="width:100%; height:70px;"><?php echo @ $this->opt['additional_css']?></textarea>
-			<br> 
-			Допишите здесь имеющиеся стили, чтобы настроить вывод под себя. Эти стили будут добавлены после дефолтных. Дефолтные стили:
+			<br><small>Допишите здесь имеющиеся стили, чтобы настроить вывод под себя. Эти стили будут добавлены после дефолтных.</small>
+			</label>
+			
+			<label>
+			<br><br>Дефолтные стили:<br>
 			<textarea readonly style="width:100%; height:50px;"><?php echo @ $this->main_css() ?></textarea>
+			</label>
 		</p>
 		
 		<br>	
@@ -87,7 +70,7 @@
 	<br><br>
 	Название файлов будут использоваться в тексте, как теги для замены. Например, если вы залили файл kissed.gif в текст будет вставляться тег <code>*kissed*</code>. В названии допускаются: нижний регистр латинских букв (a-z), цифры (0-9), тире (-) и подчеркивание (_).
 	<br><br>
-	Если вы загружаете свой комплект смайликов, то лучше используйте идентичные названия и не забудьте поделиться этим комплектом <a href='http://wp-kama.ru/contacts'>со мной</a>. Я включу его в плагин <img src="<?php echo $this->plugin_url ?>smiles/bb.gif" /></p>
+	Если вы загружаете свой комплект смайликов, то лучше используйте идентичные названия и не забудьте поделиться этим комплектом <a href='http://wp-kama.ru/contacts'>со мной</a>. Я включу его в плагин <img src="<?php echo KWS_PLUGIN_URL ?>smiles/bb.gif" /></p>
 	<h3>Удаление плагина</h3>
 	<p>При удалении, плагин удаляет все следы прибывания на сайте. Конструкции смайликов вида <code>*smile*</code> в постах и комментариях также будут удалены. При удалении, на всякий случай, сделайте бэкап базы данных.</p>
 	

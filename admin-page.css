@@ -1,0 +1,17 @@
+.sm_list{ position:relative !important; top:16px !important; z-index:99 !important; }
+.wrap{ max-width:1000px; margin-left:20px; }
+
+.smiles_wrapper{ width:700px; }
+.smiles_wrapper b{ display:block; width:50px; height:50px; float:left; text-align:center; margin:5px; cursor:pointer; }
+.smiles_wrapper b img{ padding-top:10px; }
+.smiles_wrapper b.checked{ background:#eee; outline:1px dashed #BCBCBC; }
+
+.kama_sm_options { padding:20px 10px 0; }
+.kama_sm_options table td { padding:3px 5px; text-align:left; }
+.kama_sm_options table td span { line-height:16px; }
+
+.used-smiles{  }
+.select_smiles{  }
+.used-smiles:after, .select_smiles:after{ display:block; content:''; clear:both; }
+
+.kws-smiley{ margin-top: 20% !important; }
