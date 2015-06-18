@@ -33,9 +33,11 @@
 		
 		<p>
 			Специальные обозначения смайликов:<br>
-			<textarea name='hard_sm' style="width:200px; height:150px;">
-				<?php foreach( (array) @ $this->opt['hard_sm'] as $k => $v ) echo $k .' >>> '. $v ."\n"; ?>
-			</textarea>
+			<?php 
+			echo '<textarea name="hard_sm" style="width:200px; height:150px;">';
+			foreach( (array) @ $this->opt['hard_sm'] as $k => $v ) echo $k .' >>> '. $v ."\n";
+			echo '</textarea>';
+			?>
 			<br> 
 			Укажите обозначение, которое будет использоваться в тексте и название смайлика на которы обозначение должно быть заменено. Название смотрите выше, при наведении на смайлик.
 		</p>
